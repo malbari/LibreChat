@@ -520,6 +520,19 @@ class OpenAIClient extends BaseClient {
       opts.getReqData({ promptTokens });
     }
 
+    // If textOnly is active, transform the content to a string
+    if (this.endpointConfig?.textOnly && Array.isArray(result?.prompt)) {
+      result.prompt = result.prompt.map((msg) => {
+        if (Array.isArray(msg.content)) {
+          return {
+            ...msg,
+            content: msg.content.join(''),
+          };
+        }
+        return msg;
+      });
+    }
+
     return result;
   }
 
